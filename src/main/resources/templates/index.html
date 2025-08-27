@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Tasks</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        form { margin-bottom: 1rem; }
+        input[type=text] { padding: .5rem; width: 20rem; }
+        textarea { padding: .5rem; width: 20rem; height: 5rem; }
+        button { padding: .5rem 1rem; }
+        ul { list-style: none; padding: 0; }
+        li { padding: .25rem 0; }
+        .completed { text-decoration: line-through; color: #666; }
+        .error { color: #b00020; }
+    </style>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'" />
+</head>
+<body>
+<h1>Task List</h1>
+
+<form th:action="@{/tasks}" method="post" th:object="${task}">
+    <div>
+        <label for="title">Title</label>
+        <input id="title" type="text" th:field="*{title}" required maxlength="100" />
+        <div class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+    </div>
+    <div>
+        <label for="description">Description</label>
+        <textarea id="description" th:field="*{description}" maxlength="500"></textarea>
+        <div class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+    </div>
+    <button id="addBtn" type="submit">Add Task</button>
+    <!-- CSRF fields removed since Spring Security is not enabled -->
+    <div id="message" aria-live="polite"></div>
+</form>
+
+<ul id="taskList">
+    <li th:each="t: ${tasks}" th:classappend="${t.completed} ? 'completed'">
+        <span th:text="${t.title}"></span> - <span th:text="${t.description}"></span>
+    </li>
+    <li th:if="${#lists.isEmpty(tasks)}">No tasks yet.</li>
+</ul>
+
+</body>
+</html>
+
+
