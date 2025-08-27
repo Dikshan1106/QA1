@@ -5,44 +5,41 @@ import jakarta.validation.ValidationException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class TaskService {
-    private final Map<Long, Task> tasks = new ConcurrentHashMap<>();
-    private final AtomicLong idSequence = new AtomicLong(1);
+    private final TaskRepository taskRepository;
+
+    public TaskService(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
 
     public Task addTask(@Valid Task task) {
         if (task.getTitle() == null || task.getTitle().trim().isEmpty()) {
             throw new ValidationException("Title is required");
         }
-        long id = idSequence.getAndIncrement();
-        Task toSave = new Task(id, task.getTitle().trim(),
-                task.getDescription() == null ? null : task.getDescription().trim(),
-                false);
-        tasks.put(id, toSave);
-        return toSave;
+        String title = task.getTitle().trim();
+        String description = task.getDescription() == null ? null : task.getDescription().trim();
+        Task toPersist = new Task(null, title, description, false);
+        return taskRepository.save(toPersist);
     }
 
     public List<Task> listTasks() {
-        return new ArrayList<>(tasks.values());
+        return taskRepository.findAll();
     }
 
     public Optional<Task> getTask(long id) {
-        return Optional.ofNullable(tasks.get(id));
+        return taskRepository.findById(id);
     }
 
     public Task completeTask(long id) {
-        Task task = tasks.get(id);
-        if (task == null) throw new NoSuchElementException("Task not found");
+        Task task = taskRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Task not found"));
         task.setCompleted(true);
-        return task;
+        return taskRepository.save(task);
     }
 
     public void clearAll() {
-        tasks.clear();
-        idSequence.set(1);
+        taskRepository.deleteAll();
     }
 }
 

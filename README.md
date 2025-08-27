@@ -34,6 +34,16 @@ Spring Boot demo app covering TDD, BDD, Selenium/UI, API tests, CI, JMeter, and 
 ### JMeter
 - Load test plan: `jmeter/TaskApi.jmx` targeting `/api/tasks`.
 
+### Postman API Testing
+- Files in `postman/`:
+  - `postman/QaCursor.postman_collection.json`
+  - `postman/QaCursor.local.postman_environment.json`
+- Steps:
+  1. Import both files into Postman.
+  2. Select environment "QaCursor - Local".
+  3. Run the app: `mvn spring-boot:run` (Base URL `http://localhost:8080`).
+  4. Use requests: List, Create, Complete, and the negative validation case.
+
 ### Security (OWASP basics)
 - Input validation: Bean Validation on `Task` and server-side checks in `TaskService`.
 - Basic XSS prevention: Thymeleaf escapes by default; CSP meta header added in `index.html`.

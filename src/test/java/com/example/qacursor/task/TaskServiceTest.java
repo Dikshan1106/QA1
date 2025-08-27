@@ -3,15 +3,43 @@ package com.example.qacursor.task;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.stubbing.Answer;
+import org.mockito.Mockito;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 public class TaskServiceTest {
     private TaskService service;
+    private TaskRepository repository;
+    private Map<Long, Task> store;
+    private AtomicLong seq;
 
     @BeforeEach
     void setup() {
-        service = new TaskService();
+        repository = Mockito.mock(TaskRepository.class);
+        store = new ConcurrentHashMap<>();
+        seq = new AtomicLong(1);
+
+        when(repository.save(any(Task.class))).thenAnswer((Answer<Task>) invocation -> {
+            Task t = invocation.getArgument(0);
+            if (t.getId() == null) {
+                t.setId(seq.getAndIncrement());
+            }
+            store.put(t.getId(), t);
+            return t;
+        });
+        when(repository.findAll()).thenAnswer(inv -> new ArrayList<>(store.values()));
+        when(repository.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(store.get(inv.getArgument(0))));
+        doAnswer(inv -> { store.clear(); seq.set(1); return null; }).when(repository).deleteAll();
+
+        service = new TaskService(repository);
         service.clearAll();
     }
 
