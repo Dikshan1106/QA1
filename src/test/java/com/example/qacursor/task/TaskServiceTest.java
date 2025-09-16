@@ -39,7 +39,10 @@ public class TaskServiceTest {
         when(repository.findById(anyLong())).thenAnswer(inv -> Optional.ofNullable(store.get(inv.getArgument(0))));
         doAnswer(inv -> { store.clear(); seq.set(1); return null; }).when(repository).deleteAll();
 
+
         service = new TaskService(repository);
+       //service = new TaskService(); // uncomment for get bug 1 for jira
+
         service.clearAll();
     }
 

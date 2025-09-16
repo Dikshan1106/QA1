@@ -1,0 +1,5 @@
+com\example\qacursor\bdd\CucumberTest.class
+com\example\qacursor\task\TaskApiIT.class
+com\example\qacursor\task\TaskServiceTest.class
+com\example\qacursor\ui\SeleniumUiIT.class
+com\example\qacursor\bdd\StepDefinitions.class

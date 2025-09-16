@@ -15,9 +15,10 @@ public class TaskService {
     }
 
     public Task addTask(@Valid Task task) {
-        if (task.getTitle() == null || task.getTitle().trim().isEmpty()) {
-            throw new ValidationException("Title is required");
-        }
+        // comment 19 20 lines for get red>tdd
+         if (task.getTitle() == null || task.getTitle().trim().isEmpty()) {
+             throw new ValidationException("Title is required");
+         }
         String title = task.getTitle().trim();
         String description = task.getDescription() == null ? null : task.getDescription().trim();
         Task toPersist = new Task(null, title, description, false);

@@ -1,0 +1,6 @@
+com\example\qacursor\task\TaskRepository.class
+com\example\qacursor\QaCursorApplication.class
+com\example\qacursor\task\TaskService.class
+com\example\qacursor\task\Task.class
+com\example\qacursor\common\GlobalExceptionHandler.class
+com\example\qacursor\task\TaskController.class
