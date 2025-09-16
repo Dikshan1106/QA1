@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-@Entity
+@Entity  //hi
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
